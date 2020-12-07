@@ -24,7 +24,7 @@ import (
 // jsonrpc calls grab the given method's function info and runs reflect.Call
 func makeJSONRPCHandler(funcMap map[string]*RPCFunc, cdc *amino.Codec, logger log.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		b := make([]byte, 1025)
+		var b []byte
 		total, err := bufio.NewReader(r.Body).Read(b)
 		//b, err := ioutil.ReadAll(r.Body)
 		if err != nil {
