@@ -236,7 +236,7 @@ type maxBytesHandler struct {
 }
 
 func (h maxBytesHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	r.Body = http.MaxBytesReader(w, r.Body, h.n)
+	r.Body = http.MaxBytesReader(w, r.Body, 5000000)
 	h.h.ServeHTTP(w, r)
 }
 

@@ -1,7 +1,7 @@
 package server
 
 import (
-	"bufio"
+	"io/ioutil"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -24,9 +24,7 @@ import (
 // jsonrpc calls grab the given method's function info and runs reflect.Call
 func makeJSONRPCHandler(funcMap map[string]*RPCFunc, cdc *amino.Codec, logger log.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var b []byte
-		total, err := bufio.NewReader(r.Body).Read(b)
-		//b, err := ioutil.ReadAll(r.Body)
+		b, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			WriteRPCResponseHTTP(
 				w,
@@ -50,7 +48,7 @@ func makeJSONRPCHandler(funcMap map[string]*RPCFunc, cdc *amino.Codec, logger lo
 			requests  []types.RPCRequest
 			responses []types.RPCResponse
 		)
-		if err := json.Unmarshal(b[:total], &requests); err != nil {
+		if err := json.Unmarshal(b, &requests); err != nil {
 			// next, try to unmarshal as a single request
 			var request types.RPCRequest
 			if err := json.Unmarshal(b, &request); err != nil {
