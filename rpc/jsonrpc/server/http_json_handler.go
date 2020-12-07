@@ -25,7 +25,7 @@ import (
 func makeJSONRPCHandler(funcMap map[string]*RPCFunc, cdc *amino.Codec, logger log.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		b := make([]byte, 1025)
-		_,err := bufio.NewReader(r.Body).Read(b)
+		total, err := bufio.NewReader(r.Body).Read(b)
 		//b, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			WriteRPCResponseHTTP(
@@ -50,7 +50,7 @@ func makeJSONRPCHandler(funcMap map[string]*RPCFunc, cdc *amino.Codec, logger lo
 			requests  []types.RPCRequest
 			responses []types.RPCResponse
 		)
-		if err := json.Unmarshal(b, &requests); err != nil {
+		if err := json.Unmarshal(b[:total], &requests); err != nil {
 			// next, try to unmarshal as a single request
 			var request types.RPCRequest
 			if err := json.Unmarshal(b, &request); err != nil {
